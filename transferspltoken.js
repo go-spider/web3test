@@ -51,6 +51,26 @@ const destinationTokenAccount = getAssociatedTokenAddressSync(
 
 // console.log(destinationTokenAccount.toBase58())
 (async () => {
+	 const create_account_transaction = new Transaction().add(
+        createAssociatedTokenAccountInstruction(
+            wallet.publicKey,
+            destinationTokenAccount,
+            recipient.publicKey,
+            mint,
+            TOKEN_2022_PROGRAM_ID,
+            ASSOCIATED_TOKEN_PROGRAM_ID
+        ),
+    );
+
+    const  create_account_txSig = await sendAndConfirmTransaction(
+        connection,
+        create_account_transaction,
+        [wallet],
+        { skipPreflight: true }
+    );
+
+    console.log(`Transaction Signature: ${create_account_txSig}`);
+	
     const transferInstruction =
         await createTransferCheckedWithTransferHookInstruction(
             connection,
